@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImageUpscalerClient.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace ImageUpscalerClient
         public MainWindow()
         {
             InitializeComponent();
+            this.DataContext = new ImageUpscalerViewModel();
         }
     }
 }

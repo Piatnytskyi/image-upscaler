@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "ImageUpscaler", "ImageUpscaler\ImageUpscaler.pyproj", "{BA525503-C20E-4043-B3B3-90B909297137}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImageUpscalerClient", "ImageUpscalerClient\ImageUpscalerClient.csproj", "{3C734287-5909-4778-9075-67BFEE1BF766}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,8 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BA525503-C20E-4043-B3B3-90B909297137}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA525503-C20E-4043-B3B3-90B909297137}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C734287-5909-4778-9075-67BFEE1BF766}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C734287-5909-4778-9075-67BFEE1BF766}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C734287-5909-4778-9075-67BFEE1BF766}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C734287-5909-4778-9075-67BFEE1BF766}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

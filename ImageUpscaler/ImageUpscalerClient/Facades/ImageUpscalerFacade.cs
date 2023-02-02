@@ -1,27 +1,48 @@
 ﻿using ImageUpscalerClient.Enums;
+using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace ImageUpscalerClient.Facades
 {
-    public class ImageUpscalerFacade
+    public static class ImageUpscalerFacade
     {
-        public async Task<int> RunImageUpscaler(
+        public static async Task RunImageUpscaler(
             string imagePath,
             Algorithm algorithm,
             Scale scale,
-            string modelPath)
+            string imageOutputPath = null)
         {
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-
+            ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.CreateNoWindow = true;
             startInfo.FileName = "python.exe";
-            startInfo.Arguments = $"ImageUpscaler.py \"{imagePath}\" {algorithm.ToString().ToLower()} {scale} \"{modelPath}\"";
+            startInfo.Arguments = $"ImageUpscaler.py \"{imagePath}\" {algorithm.ToString().ToLower()} {(int)scale} ";
 
-            process.StartInfo = startInfo;
-            process.Start();
-            await process.WaitForExitAsync();
-            return process.ExitCode;
+            if (algorithm >= Algorithm.EDSR)
+                startInfo.Arguments += $"\"{algorithm.ToString().ToUpper()}_{scale}.pb\"";
+
+            Process process;
+            using (process = new Process())
+            {
+                process.StartInfo = startInfo;
+                try
+                {
+                    process.Start();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+                await process.WaitForExitAsync();
+
+                if (process.ExitCode != 0)
+                    throw new Exception("Failed to upscale.");
+            }
+
+            if (!string.IsNullOrEmpty(imageOutputPath))
+                File.Move($"upscaled{Path.GetExtension(imagePath)}", imageOutputPath, true);
         }
     }
 }

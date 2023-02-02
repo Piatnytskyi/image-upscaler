@@ -8,65 +8,47 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="EDSR_x2.pb" />
-    <None Remove="EDSR_x3.pb" />
-    <None Remove="EDSR_x4.pb" />
-    <None Remove="ESPCN_x2.pb" />
-    <None Remove="ESPCN_x3.pb" />
-    <None Remove="ESPCN_x4.pb" />
-    <None Remove="FSRCNN_x2.pb" />
-    <None Remove="FSRCNN_x3.pb" />
-    <None Remove="FSRCNN_x4.pb" />
-    <None Remove="LapSRN_x2.pb" />
-    <None Remove="LapSRN_x4.pb" />
-    <None Remove="LapSRN_x8.pb" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="IronPython" Version="3.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="EDSR_x2.pb">
+    <None Update="EDSR_x2.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="EDSR_x3.pb">
+    </None>
+    <None Update="EDSR_x3.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="EDSR_x4.pb">
+    </None>
+    <None Update="EDSR_x4.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="ESPCN_x2.pb">
+    </None>
+    <None Update="ESPCN_x2.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="ESPCN_x3.pb">
+    </None>
+    <None Update="ESPCN_x3.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="ESPCN_x4.pb">
+    </None>
+    <None Update="ESPCN_x4.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="FSRCNN_x2.pb">
+    </None>
+    <None Update="FSRCNN_x2.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="FSRCNN_x3.pb">
+    </None>
+    <None Update="FSRCNN_x3.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="FSRCNN_x4.pb">
+    </None>
+    <None Update="FSRCNN_x4.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="LapSRN_x2.pb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="LapSRN_x4.pb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="LapSRN_x8.pb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
+    </None>
     <None Update="ImageUpscaler.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="LAPSRN_x2.pb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="LAPSRN_x4.pb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="LAPSRN_x8.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -17,8 +17,8 @@ namespace ImageUpscalerClient.Facades
             ProcessStartInfo startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
-            startInfo.FileName = "python.exe";
-            startInfo.Arguments = $"ImageUpscaler.py \"{imagePath}\" {algorithm.ToString().ToLower()} {(int)scale} ";
+            startInfo.FileName = "dist\\ImageUpscaler.exe";
+            startInfo.Arguments = $"\"{imagePath}\" {algorithm.ToString().ToLower()} {(int)scale} ";
 
             if (algorithm >= Algorithm.EDSR)
                 startInfo.Arguments += $"\"{algorithm.ToString().ToUpper()}_{scale}.pb\"";

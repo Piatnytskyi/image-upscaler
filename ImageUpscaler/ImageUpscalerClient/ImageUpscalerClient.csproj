@@ -12,6 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="deploy-image-upscaler.bat">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
     <None Update="EDSR_x2.pb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -52,5 +55,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call deploy-image-upscaler.bat &quot;$(ProjectDir)$(OutDir)&quot;" />
+  </Target>
 
 </Project>

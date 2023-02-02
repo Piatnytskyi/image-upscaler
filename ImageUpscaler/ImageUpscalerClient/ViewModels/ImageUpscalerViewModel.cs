@@ -269,7 +269,7 @@ namespace ImageUpscalerClient.ViewModels
         private bool CanRunImageUpscale()
         {
             return !IsInProgress
-                || !string.IsNullOrEmpty(FilenameInput);
+                && !string.IsNullOrEmpty(FilenameInput);
         }
 
         private async Task RunImageUpscale()
@@ -316,7 +316,7 @@ namespace ImageUpscalerClient.ViewModels
 
         private bool CanOpenOutput()
         {
-            return File.Exists(Output);
+            return !IsInProgress && File.Exists(Output);
         }
 
         private void OpenOutput()

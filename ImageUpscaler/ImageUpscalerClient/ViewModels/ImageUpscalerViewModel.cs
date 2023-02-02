@@ -7,12 +7,14 @@ namespace ImageUpscalerClient.ViewModels
 {
     internal class ImageUpscalerViewModel : AbstractViewModel
     {
+
+
         private string _filenameInput = string.Empty;
 
         public string FilenameInput
         {
             get => _filenameInput;
-            private set
+            set
             {
                 if (_filenameInput.Equals(value))
                 {
@@ -28,7 +30,7 @@ namespace ImageUpscalerClient.ViewModels
         public string FilenameTemporaryOutput
         {
             get => _filenameTemporaryOutput;
-            set
+            private set
             {
                 if (_filenameTemporaryOutput.Equals(value))
                 {
@@ -154,12 +156,12 @@ namespace ImageUpscalerClient.ViewModels
 
         private async Task RunImageUpscale()
         {
+            IsInProgress = true;
+            Status = "Upscaling...:";
+
             await Task.Run(() =>
             {
-                IsInProgress = true;
-                Status = "Upscaling...:";
-
-                
+                                
 
                 Status = "Image was upscaled!";
                 IsInProgress = false;

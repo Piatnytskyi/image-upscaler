@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using ImageUpscalerClient.Enums;
+using System.Threading.Tasks;
 
 namespace ImageUpscalerClient.Facades
 {
@@ -6,8 +7,8 @@ namespace ImageUpscalerClient.Facades
     {
         public async Task<int> RunImageUpscaler(
             string imagePath,
-            string algorithm,
-            int scale,
+            Algorithm algorithm,
+            Scale scale,
             string modelPath)
         {
             System.Diagnostics.Process process = new System.Diagnostics.Process();
@@ -15,7 +16,7 @@ namespace ImageUpscalerClient.Facades
 
             startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
             startInfo.FileName = "python.exe";
-            startInfo.Arguments = $"ImageUpscaler.py \"{imagePath}\" {algorithm} {scale} \"{modelPath}\"";
+            startInfo.Arguments = $"ImageUpscaler.py \"{imagePath}\" {algorithm.ToString().ToLower()} {scale} \"{modelPath}\"";
 
             process.StartInfo = startInfo;
             process.Start();

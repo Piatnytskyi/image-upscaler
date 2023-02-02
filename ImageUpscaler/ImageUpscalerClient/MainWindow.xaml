@@ -3,10 +3,82 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:ImageUpscalerClient"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        xmlns:Converters="clr-namespace:ImageUpscalerClient.Converters"
+        Title="Image Upscaler Client" Height="215" Width="800"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" TrueValue="Visible" FalseValue="Hidden"/>
+    </Window.Resources>
     <Grid>
-
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20*"/>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="69*"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0" DockPanel.Dock="Top" Margin="0,0,0,1">
+            <MenuItem Header="File">
+                <MenuItem Header="Choose Image..." Command="{Binding ChooseFileCommand}"/>
+                <Separator />
+                <MenuItem Header="Save Upscaled Image..." Command="{Binding SaveFileCommand}"/>
+            </MenuItem>
+        </Menu>
+        <Grid Grid.Row="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="10"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="25" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <Label Content="Enter parameters for upscaling:" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top"/>
+            <ComboBox HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="2" VerticalAlignment="Top"  
+                ItemsSource="{Binding Path=Scales}"
+                SelectedItem="{Binding Path=Scale}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding ScaleChangedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+            <ComboBox HorizontalAlignment="Stretch" Grid.Column="3" Grid.Row="2" VerticalAlignment="Top"  
+                ItemsSource="{Binding Path=Algorithms}"
+                SelectedItem="{Binding Path=Algorithm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Command="{Binding RunImageUpscaleCommand}" Content="Run Image Upscale" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Top"/>
+        </Grid>
+        <StatusBar Grid.Row="2">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+            <StatusBarItem Grid.Column="1">
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="{Binding Status}" TextTrimming="CharacterEllipsis" Foreground="Gray" />
+                    <TextBlock>
+                        <Hyperlink Command="{Binding OpenOutputCommand}">
+                            <TextBlock Text="{Binding Output}" TextTrimming="CharacterEllipsis" Foreground="Gray"/>
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </StatusBarItem>
+            <StatusBarItem Grid.Column="2">
+                <ProgressBar Visibility="{Binding IsInProgress, Converter={StaticResource BoolToVisibilityConverter}}" IsIndeterminate="True" Width="90" Height="40" />
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>

@@ -1,13 +1,128 @@
 ﻿using ImageUpscalerClient.Commands;
 using Microsoft.Win32;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
+using ImageUpscalerClient.Enums;
+using System.Collections.Generic;
+using ImageUpscalerClient.Facades;
+using System.Windows;
+using System;
+using System.Linq;
+using System.Diagnostics;
 
 namespace ImageUpscalerClient.ViewModels
 {
     internal class ImageUpscalerViewModel : AbstractViewModel
     {
+        private static Dictionary<Scale, Algorithm[]> _scalesToAlgorithms =
+            new Dictionary<Scale, Algorithm[]>
+            {
+                {
+                    Scale.x2, new[]
+                    {
+                        Algorithm.Bicubic,
+                        Algorithm.Bilinear,
+                        Algorithm.EDSR,
+                        Algorithm.ESPCN,
+                        Algorithm.FSRCNN,
+                        Algorithm.LAPSRN
+                    }
+                },
+                {
+                    Scale.x3, new[]
+                    {
+                        Algorithm.Bicubic,
+                        Algorithm.Bilinear,
+                        Algorithm.EDSR,
+                        Algorithm.ESPCN,
+                        Algorithm.FSRCNN
+                    }
+                },
+                {
+                    Scale.x4, new[]
+                    {
+                        Algorithm.Bicubic,
+                        Algorithm.Bilinear,
+                        Algorithm.EDSR,
+                        Algorithm.ESPCN,
+                        Algorithm.FSRCNN,
+                        Algorithm.LAPSRN
+                    }
+                },
+                {
+                    Scale.x8, new[]
+                    {
+                        Algorithm.LAPSRN
+                    }
+                }
+            };
 
+        private ObservableCollection<Scale> _scales =
+            new ObservableCollection<Scale>(Enum.GetValues(typeof(Scale)).Cast<Scale>());
+
+        public ObservableCollection<Scale> Scales
+        {
+            get => _scales;
+            private set
+            {
+                if (_scales.Equals(value))
+                {
+                    return;
+                }
+                _scales = value;
+                RaisePropertyChanged(nameof(Scales));
+            }
+        }
+
+        private Scale _scale = Scale.x2;
+
+        public Scale Scale
+        {
+            get => _scale;
+            set
+            {
+                if (_scale.Equals(value))
+                {
+                    return;
+                }
+                _scale = value;
+                RaisePropertyChanged(nameof(Scale));
+            }
+        }
+
+        private ObservableCollection<Algorithm> _algorithms =
+            new ObservableCollection<Algorithm>(Enum.GetValues(typeof(Algorithm)).Cast<Algorithm>());
+
+        public ObservableCollection<Algorithm> Algorithms
+        {
+            get => _algorithms;
+            private set
+            {
+                if (_algorithms.Equals(value))
+                {
+                    return;
+                }
+                _algorithms = value;
+                RaisePropertyChanged(nameof(Algorithms));
+            }
+        }
+
+        private Algorithm _algorithm = Algorithm.Bilinear;
+
+        public Algorithm Algorithm
+        {
+            get => _algorithm;
+            set
+            {
+                if (_algorithm.Equals(value))
+                {
+                    return;
+                }
+                _algorithm = value;
+                RaisePropertyChanged(nameof(Algorithm));
+            }
+        }
 
         private string _filenameInput = string.Empty;
 
@@ -92,13 +207,16 @@ namespace ImageUpscalerClient.ViewModels
         public RelayCommand ChooseFileCommand { get; set; }
         public RelayCommand SaveFileCommand { get; set; }
         public AsyncCommand RunImageUpscaleCommand { get; set; }
+        public RelayCommand ScaleChangedCommand { get; set; }
+        public RelayCommand OpenOutputCommand { get; set; }
 
         public ImageUpscalerViewModel()
         {
             ChooseFileCommand = new RelayCommand(o => ChooseFile(), c => CanChooseFile());
             SaveFileCommand = new RelayCommand(o => SaveFile(), c => CanSaveFile());
             RunImageUpscaleCommand = new AsyncCommand(o => RunImageUpscale(), c => CanRunImageUpscale());
-
+            ScaleChangedCommand = new RelayCommand(o => ScaleChanged());
+            OpenOutputCommand = new RelayCommand(o => OpenOutput(), c => CanOpenOutput());
         }
 
         private bool CanSaveFile()
@@ -139,8 +257,8 @@ namespace ImageUpscalerClient.ViewModels
             {
                 FilenameInput = openFileDialog.FileName;
                 FilenameTemporaryOutput = Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "upscaled" + Path.GetExtension(FilenameInput));
+                    Path.GetDirectoryName(FilenameInput)!,
+                    "upscaled-" + Path.GetFileName(FilenameInput));
                 File.Delete(FilenameTemporaryOutput);
 
                 Status = "Chosen file:";
@@ -159,13 +277,56 @@ namespace ImageUpscalerClient.ViewModels
             IsInProgress = true;
             Status = "Upscaling...:";
 
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
-                                
+                try
+                {
+                    await ImageUpscalerFacade.RunImageUpscaler(
+                        FilenameInput,
+                        Algorithm,
+                        Scale,
+                        FilenameTemporaryOutput);
+                }
+                catch (Exception ex)
+                {
+                    Status = ex.Message;
+                    IsInProgress = false;
+
+                    MessageBox.Show(
+                        "Image Upscaler failed to execute!",
+                        "Image Upscaler",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error,
+                        MessageBoxResult.Yes);
+
+                    return;
+                }
 
                 Status = "Image was upscaled!";
+                Output = FilenameTemporaryOutput;
                 IsInProgress = false;
             });
+        }
+
+        private void ScaleChanged()
+        {
+            Algorithms = new ObservableCollection<Algorithm>(_scalesToAlgorithms[Scale]);
+            Algorithm = _scalesToAlgorithms[Scale].First();
+        }
+
+        private bool CanOpenOutput()
+        {
+            return File.Exists(Output);
+        }
+
+        private void OpenOutput()
+        {
+            using (Process explorer = new Process())
+            {
+                explorer.StartInfo.FileName = "explorer";
+                explorer.StartInfo.Arguments = "\"" + Output + "\"";
+                explorer.Start();
+            }
         }
     }
 }

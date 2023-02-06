@@ -9,7 +9,7 @@ if len(sys.argv) < 4:
 
 image_path = sys.argv[1];
 algorithm = sys.argv[2]
-scale = int(sys.argv[3])
+scale = float(sys.argv[3])
 model_path = None
 
 if len(sys.argv) > 4:

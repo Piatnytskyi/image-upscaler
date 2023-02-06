@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ImageUpscalerClient.Facades
+namespace ImageScalerClient.Facades
 {
     public static class ImageUpscalerFacade
     {
@@ -12,13 +12,19 @@ namespace ImageUpscalerClient.Facades
             string imagePath,
             Algorithm algorithm,
             Scale scale,
+            bool isToDownscale = false,
             string imageOutputPath = null)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.CreateNoWindow = true;
             startInfo.FileName = "dist\\ImageUpscaler.exe";
-            startInfo.Arguments = $"\"{imagePath}\" {algorithm.ToString().ToLower()} {(int)scale} ";
+            startInfo.Arguments = $"\"{imagePath}\" {algorithm.ToString().ToLower()} ";
+
+            if (isToDownscale)
+                startInfo.Arguments += $"{1/((float)scale)} ";
+            else
+                startInfo.Arguments += $"{(int)scale} ";
 
             if (algorithm >= Algorithm.EDSR)
                 startInfo.Arguments += $"\"{algorithm.ToString().ToUpper()}_{scale}.pb\"";

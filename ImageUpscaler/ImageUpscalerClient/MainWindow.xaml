@@ -6,7 +6,7 @@
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:ImageUpscalerClient"
         xmlns:Converters="clr-namespace:ImageUpscalerClient.Converters"
-        Title="Image Upscaler Client" Height="215" Width="800"
+        Title="Image Upscaler Client" Height="240" Width="800"
         ResizeMode="NoResize">
     <Window.Resources>
         <Converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" TrueValue="Visible" FalseValue="Hidden"/>
@@ -14,7 +14,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20*"/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="125"/>
             <RowDefinition Height="69*"/>
         </Grid.RowDefinitions>
         <Menu Grid.Row="0" DockPanel.Dock="Top" Margin="0,0,0,1">
@@ -27,6 +27,7 @@
         <Grid Grid.Row="1" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="10"/>
+                <RowDefinition Height="25"/>
                 <RowDefinition Height="25"/>
                 <RowDefinition Height="25"/>
                 <RowDefinition Height="25"/>
@@ -51,8 +52,17 @@
             </ComboBox>
             <ComboBox HorizontalAlignment="Stretch" Grid.Column="3" Grid.Row="2" VerticalAlignment="Top"  
                 ItemsSource="{Binding Path=Algorithms}"
-                SelectedItem="{Binding Path=Algorithm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button Command="{Binding RunImageUpscaleCommand}" Content="Run Image Upscale" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Top"/>
+                SelectedItem="{Binding Path=Algorithm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding AlgorithmChangedCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+            <CheckBox HorizontalAlignment="Stretch" Grid.Column="1" Grid.Row="3" VerticalAlignment="Top"
+                      IsEnabled="{Binding Path=CanDownscale}"
+                      IsChecked="{Binding Path=IsToDownscale}" Content="Downscale"/>
+            <Button Command="{Binding RunImageUpscaleCommand}" Content="Run Image Upscale" Grid.Column="1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Grid.Row="4" VerticalAlignment="Top"/>
         </Grid>
         <StatusBar Grid.Row="2">
             <StatusBar.ItemsPanel>

@@ -5,7 +5,7 @@ using System.IO;
 using System.Threading.Tasks;
 using ImageUpscalerClient.Enums;
 using System.Collections.Generic;
-using ImageUpscalerClient.Facades;
+using ImageScalerClient.Facades;
 using System.Windows;
 using System;
 using System.Linq;
@@ -88,6 +88,38 @@ namespace ImageUpscalerClient.ViewModels
                 }
                 _scale = value;
                 RaisePropertyChanged(nameof(Scale));
+            }
+        }
+
+        private bool _isToDownscale;
+
+        public bool IsToDownscale
+        {
+            get => _isToDownscale;
+            set
+            {
+                if (_isToDownscale.Equals(value))
+                {
+                    return;
+                }
+                _isToDownscale = value;
+                RaisePropertyChanged(nameof(IsToDownscale));
+            }
+        }
+
+        private bool _canDownscale = true;
+
+        public bool CanDownscale
+        {
+            get => _canDownscale;
+            private set
+            {
+                if (_canDownscale.Equals(value))
+                {
+                    return;
+                }
+                _canDownscale = value;
+                RaisePropertyChanged(nameof(CanDownscale));
             }
         }
 
@@ -208,6 +240,7 @@ namespace ImageUpscalerClient.ViewModels
         public RelayCommand SaveFileCommand { get; set; }
         public AsyncCommand RunImageUpscaleCommand { get; set; }
         public RelayCommand ScaleChangedCommand { get; set; }
+        public RelayCommand AlgorithmChangedCommand { get; set; }
         public RelayCommand OpenOutputCommand { get; set; }
 
         public ImageUpscalerViewModel()
@@ -216,6 +249,7 @@ namespace ImageUpscalerClient.ViewModels
             SaveFileCommand = new RelayCommand(o => SaveFile(), c => CanSaveFile());
             RunImageUpscaleCommand = new AsyncCommand(o => RunImageUpscale(), c => CanRunImageUpscale());
             ScaleChangedCommand = new RelayCommand(o => ScaleChanged());
+            AlgorithmChangedCommand = new RelayCommand(o => AlgorithmChanged());
             OpenOutputCommand = new RelayCommand(o => OpenOutput(), c => CanOpenOutput());
         }
 
@@ -238,7 +272,7 @@ namespace ImageUpscalerClient.ViewModels
                 File.Move(FilenameTemporaryOutput, saveFileDialog.FileName);
                 File.Delete(FilenameTemporaryOutput);
 
-                Status = "Upscaled image saved:";
+                Status = "Scaled image saved:";
             }
         }
 
@@ -285,6 +319,7 @@ namespace ImageUpscalerClient.ViewModels
                         FilenameInput,
                         Algorithm,
                         Scale,
+                        IsToDownscale,
                         FilenameTemporaryOutput);
                 }
                 catch (Exception ex)
@@ -302,7 +337,7 @@ namespace ImageUpscalerClient.ViewModels
                     return;
                 }
 
-                Status = "Image was upscaled!";
+                Status = "Image was scaled!";
                 Output = FilenameTemporaryOutput;
                 IsInProgress = false;
             });
@@ -312,6 +347,19 @@ namespace ImageUpscalerClient.ViewModels
         {
             Algorithms = new ObservableCollection<Algorithm>(_scalesToAlgorithms[Scale]);
             Algorithm = _scalesToAlgorithms[Scale].First();
+        }
+
+        private void AlgorithmChanged()
+        {
+            if (Algorithm >= Algorithm.EDSR)
+            {
+                CanDownscale = false;
+                IsToDownscale = false;
+            }
+            else
+            {
+                CanDownscale = true;
+            }
         }
 
         private bool CanOpenOutput()

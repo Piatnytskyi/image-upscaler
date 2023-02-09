@@ -28,7 +28,7 @@ elif algorithm == 'bicubic':
     new_image = cv2.resize(image, dsize = None, fx = scale, fy = scale, interpolation = cv2.INTER_CUBIC)
 elif algorithm == 'edsr' or algorithm == 'espcn' or algorithm == 'fsrcnn' or algorithm == 'lapsrn':
     sr.readModel(model_path)
-    sr.setModel(algorithm, scale)
+    sr.setModel(algorithm, int(scale))
     new_image = sr.upsample(image)
 else:
     print('Algorithm not recognized.')

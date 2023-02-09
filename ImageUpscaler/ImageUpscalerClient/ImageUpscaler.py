@@ -1,6 +1,7 @@
 import sys
 import cv2
 from cv2 import dnn_superres
+import pathlib
 
 if len(sys.argv) < 4:
     print('Usage: <path_to_image.png> <algo_string> <upscale_int> <model_path.pb>')
@@ -40,4 +41,4 @@ if new_image is None:
 
 print('Upsampling succeeded.')
 
-cv2.imwrite("./upscaled.png", new_image)
+cv2.imwrite(f'./upscaled{pathlib.Path(image_path).suffix}', new_image)
